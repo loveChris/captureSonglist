@@ -3,6 +3,7 @@
 import MySQLdb
 import requests,re
 from urllib import urlencode
+from time import sleep
 
 def getID():
     db = MySQLdb.connect("localhost", "root", "123456", "songlist",charset="utf8")
@@ -26,6 +27,7 @@ def getDetails(id):
           }
     r = requests.get(url, headers=kv)
     response = r.text
+    sleep(1)
     # print response.encode("utf-8")
     # with open("html.txt", "w")as f:
     #     f.write(response.encode("utf-8"))
@@ -38,6 +40,7 @@ def getDetails(id):
     description = description[0].replace('\n','').replace('<b>','').replace('</b>','').replace('<br>','')
     playcount = re.findall(r'(?<=class="s-fc6">).*?(?=</strong>)', response)
     playcount = int(playcount[0])
+    print "playcount :" ,playcount
     sort = re.findall(r'(?<=order=hot"><i>).*?(?=</i>)', response)
     sortmore = ""
     for i in range(len(sort)):
@@ -59,18 +62,18 @@ def updateList(description,playcount,sortmore,id):
 
 if __name__ == '__main__':
     ids = getID()
-    # for i in range(len(ids)):
-    #     id = ids[i][0]
-    #     description, playcount, sortmore=getDetails(id)
-    #     # print description
-    #     updateList(description,playcount[0],sortmore,id)
-    # description, playcount, sortmore = getDetails(ids[0][0])
+    for i in range(len(ids)):
+        id = ids[i][0]
+        print id
+        description, playcount, sortmore=getDetails(id)
+        updateList(description,playcount,sortmore,id)
+    # description, playcount, sortmore = getDetails(791293)
     # print description
-    description, playcount, sortmore = getDetails(id=9732637)
-    print description
-    print playcount
-    print sortmore
-    updateList(description,playcount,sortmore,id=9732637)
+    # description, playcount, sortmore = getDetails(id=9732637)
+    # print description
+    # print playcount
+    # print sortmore
+    # updateList(description,playcount,sortmore,id=9732637)
 
 
 
